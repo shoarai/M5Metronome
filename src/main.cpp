@@ -12,11 +12,51 @@
 
 int bpm = 0;
 bool soundOn = true;
-
-// 音符変数の宣言
-float note; // 8分音符
+float note = 0;
 
 Preferences preferences;
+
+int upCount = 0;
+int downCount = 0;
+
+int getBpmChangeValueLongPress()
+{
+  if (M5.BtnA.pressedFor(1000))
+  {
+    (M5.BtnA.isPressed())
+    {
+      upCount++;
+      if (upCount > 500)
+      {
+        upCount = 0;
+        return 1;
+      }
+      return 0;
+    }
+  }
+  else if (M5.BtnA.wasPressed())
+  {
+    return 1;
+  }
+  else if (M5.BtnB.pressedFor(1000))
+  {
+    (M5.BtnB.isPressed())
+    {
+      downCount++;
+      if (downCount > 500)
+      {
+        downCount = 0;
+        return 1;
+      }
+      return 0;
+    }
+  }
+  else if (M5.BtnB.wasPressed())
+  {
+    return -1;
+  }
+  return 0;
+}
 
 int getBpmChangeValue()
 {
@@ -88,8 +128,6 @@ void printBpm()
 {
   M5.Lcd.fillScreen(BLACK);
   M5.Lcd.setCursor(10, 20);
-  // for default font
-  // M5.Lcd.setCursor(60, 40);
   M5.Lcd.println(bpm);
 }
 
@@ -110,7 +148,6 @@ void changeBpm()
 
 void calcBpm()
 {
-  // 音の長さをBPMに合わせる
   note = (60000 / bpm) / 4;
 }
 
@@ -138,8 +175,6 @@ void setup()
   M5.IMU.Init();
   M5.Lcd.setTextFont(7);
   M5.Lcd.setTextSize(2);
-  // for default font
-  // M5.Lcd.setTextSize(12);
   setLcdRotationByAttitude();
 
   // Save BPM
